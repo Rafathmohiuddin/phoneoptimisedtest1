@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laxman's Gym & Fitness Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Poppins',sans-serif; background:#000; color:#fff; overflow-x:hidden; }
+
+    /* ── HEADER ── */
+    .main-header {
+      position:fixed; top:0; left:0; width:100%;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:18px 6%; z-index:200;
+      background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent);
+    }
+    .logo-title {
+      font-family:'Oswald',sans-serif; font-size:clamp(1.3rem,2.5vw,2rem);
+      font-weight:700; letter-spacing:1px; line-height:1; color:#fff; display:block;
+    }
+    .logo-subtitle {
+      color:#d31118; font-size:clamp(0.52rem,1vw,0.72rem);
+      font-weight:600; letter-spacing:1.5px; display:block; margin-top:3px;
+    }
+    .navbar { display:flex; gap:clamp(14px,2.2vw,32px); align-items:center; }
+    .navbar a {
+      color:#fff; text-decoration:none; font-family:'Oswald',sans-serif;
+      font-size:clamp(0.72rem,0.95vw,1rem); letter-spacing:1.5px;
+      text-transform:uppercase; transition:color .3s; padding-bottom:3px; white-space:nowrap;
+    }
+    .navbar a:hover,.navbar a.active { color:#d31118; border-bottom:2px solid #d31118; }
+    .btn-join {
+      background:#d31118; color:#fff; border:none;
+      padding:clamp(9px,1.1vw,14px) clamp(14px,2vw,30px);
+      font-family:'Oswald',sans-serif; font-size:clamp(0.78rem,0.95vw,1.05rem);
+      letter-spacing:1px; cursor:pointer; text-transform:uppercase; transition:background .3s; white-space:nowrap;
+    }
+    .btn-join:hover { background:#a80d13; }
+
+    /* Hamburger */
+    .hamburger {
+      display:none; flex-direction:column; justify-content:space-between;
+      width:28px; height:20px; cursor:pointer; background:none; border:none; padding:0; z-index:300;
+    }
+    .hamburger span { display:block; height:2px; background:#fff; border-radius:2px; transition:all .3s; }
+    .hamburger.open span:nth-child(1){ transform:translateY(9px) rotate(45deg); }
+    .hamburger.open span:nth-child(2){ opacity:0; }
+    .hamburger.open span:nth-child(3){ transform:translateY(-9px) rotate(-45deg); }
+
+    /* Mobile nav */
+    .mobile-nav {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.97); z-index:250;
+      flex-direction:column; justify-content:center; align-items:center; gap:28px;
+    }
+    .mobile-nav.open { display:flex; }
+    .mobile-nav a {
+      color:#fff; text-decoration:none; font-family:'Oswald',sans-serif;
+      font-size:1.7rem; letter-spacing:3px; text-transform:uppercase; transition:color .3s;
+    }
+    .mobile-nav a:hover { color:#d31118; }
+    .mobile-nav .btn-join { font-size:1.15rem; padding:13px 36px; margin-top:8px; }
+
+    /* ──────────────────────────────────────────
+       IMAGE-SECTION PATTERN
+       All 5 sections use the same pattern:
+       .xyz-section  { position:relative; }
+       .xyz-bg       { display:block; width:100%; height:auto; }
+       .xyz-content  { position:absolute; inset:0; display:flex; ... }
+       On mobile: .xyz-bg becomes object-fit contained,
+       .xyz-content becomes position:relative and stacks below.
+       ────────────────────────────────────────── */
+
+    /* ── SECTION 1: HERO ── */
+    .hero-section { position:relative; background:#000; }
+    .hero-bg {
+      display:block; width:100%; height:auto;
+      /* on desktop show full image */
+    }
+    .hero-content-wrap {
+      position:absolute; inset:0;
+      display:flex; align-items:center;
+      padding:100px 6% 60px;
+    }
+    .hero-content { max-width:600px; width:100%; }
+
+    .subheading { display:flex; align-items:center; gap:15px; margin-bottom:18px; }
+    .red-text-small { color:#d31118; font-weight:600; font-size:clamp(0.68rem,1.1vw,0.88rem); letter-spacing:2px; }
+    .red-line { height:2px; width:clamp(45px,7vw,90px); background:#d31118; flex-shrink:0; }
+    .main-title {
+      font-family:'Oswald',sans-serif;
+      font-size:clamp(2rem,5.2vw,5.5rem);
+      line-height:1; text-transform:uppercase; margin-bottom:22px;
+    }
+    .white-text { color:#fff; }
+    .red-text-large { color:#d31118; }
+    .description { font-size:clamp(0.83rem,1.3vw,1.05rem); line-height:1.6; color:#dcdcdc; margin-bottom:32px; }
+    .action-buttons { display:flex; align-items:center; gap:18px; margin-bottom:44px; flex-wrap:wrap; }
+    .btn-outline {
+      background:transparent; color:#fff; border:2px solid #d31118;
+      padding:clamp(9px,1.1vw,14px) clamp(16px,2.2vw,28px);
+      font-family:'Oswald',sans-serif; font-size:clamp(0.88rem,1.2vw,1.15rem);
+      cursor:pointer; transition:all .3s; white-space:nowrap;
+    }
+    .btn-outline:hover { background:#d31118; }
+    .btn-play {
+      background:transparent; color:#fff; border:none;
+      font-family:'Oswald',sans-serif; font-size:clamp(0.88rem,1.1vw,1.05rem);
+      display:flex; align-items:center; gap:10px; cursor:pointer; white-space:nowrap;
+    }
+    .play-icon {
+      display:inline-flex; justify-content:center; align-items:center;
+      width:36px; height:36px; border:2px solid #fff; border-radius:50%; font-size:0.82rem; flex-shrink:0;
+    }
+    .stats-container {
+      display:flex; justify-content:space-between; gap:8px;
+      border-top:1px solid rgba(255,255,255,.2); padding-top:22px; flex-wrap:wrap;
+    }
+    .stat-box { text-align:center; flex:1; min-width:65px; }
+    .stat-box .icon { color:#d31118; font-size:clamp(1.2rem,2.2vw,1.9rem); margin-bottom:7px; }
+    .stat-box h2 { font-family:'Oswald',sans-serif; font-size:clamp(1.3rem,2.8vw,2.4rem); margin-bottom:3px; }
+    .stat-box p { font-size:clamp(0.56rem,0.82vw,0.72rem); letter-spacing:1px; color:#aaa; line-height:1.3; }
+
+    /* ── SECTION 2: STORY ── */
+    .story-section { position:relative; background:#f0ece4; }
+    .story-bg { display:block; width:100%; height:auto; }
+    .story-content-wrap {
+      position:absolute; inset:0;
+      display:flex; align-items:center;
+      padding:60px 6%;
+    }
+    .story-inner { max-width:500px; width:100%; }
+    .story-subheading-wrapper { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .story-subheading { color:#d31118; font-weight:600; font-size:clamp(0.68rem,1.1vw,0.88rem); letter-spacing:2px; }
+    .line-thin { height:1px; width:70px; background:#d31118; flex-shrink:0; }
+    .story-main-heading {
+      font-family:'Oswald',sans-serif; font-size:clamp(2rem,4.6vw,4.4rem);
+      line-height:1.05; text-transform:uppercase; color:#111; margin-bottom:22px;
+    }
+    .line-thick { width:48px; height:4px; background:#d31118; margin-bottom:24px; }
+    .story-description { font-size:clamp(0.82rem,1.2vw,1rem); line-height:1.7; color:#222; margin-bottom:18px; }
+    .founder-info { margin-top:30px; display:flex; flex-direction:column; gap:5px; }
+    .signature-wrapper { position:relative; display:inline-block; width:fit-content; }
+    .signature { font-family:'Great Vibes',cursive; font-size:clamp(2rem,3.6vw,3.3rem); color:#111; line-height:1; padding-right:18px; }
+    .signature-line { position:absolute; bottom:13px; left:0; width:110%; height:1px; background:#111; z-index:-1; }
+    .role { color:#d31118; font-weight:700; font-size:clamp(0.68rem,0.92vw,0.82rem); letter-spacing:2px; text-transform:uppercase; }
+
+    /* ── SECTION 3: MISSION ── */
+    .mission-section { position:relative; background:#1a0000; }
+    .mission-bg { display:block; width:100%; height:auto; }
+    .mission-content-wrap {
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:flex-end;
+      padding:60px 6%;
+    }
+    .mission-container { max-width:620px; width:100%; }
+    .mission-subheading {
+      font-family:'Oswald',sans-serif; color:#d31118;
+      font-size:clamp(0.88rem,1.2vw,1.15rem); font-weight:500; letter-spacing:1.5px;
+      text-transform:uppercase; margin-bottom:14px;
+    }
+    .mission-main-heading {
+      font-family:'Oswald',sans-serif; font-size:clamp(1.5rem,3.2vw,3.3rem);
+      line-height:1.1; text-transform:uppercase; color:#fff; margin-bottom:18px;
+    }
+    .divider-line { border:none; height:3px; background:#d31118; width:100%; margin-bottom:26px; }
+    .mission-list { list-style:none; display:flex; flex-direction:column; gap:14px; }
+    .mission-list li { display:flex; align-items:center; gap:14px; font-size:clamp(0.82rem,1.2vw,1.1rem); color:#fff; }
+    .check-icon { flex-shrink:0; width:21px; height:21px; }
+
+    /* ── SECTION 4: TEAM ── */
+    .team-section { position:relative; background:#e5e5e5; }
+    .team-bg { display:block; width:100%; height:auto; }
+    .team-content-wrap { position:absolute; inset:0; }
+    .team-header-content { position:absolute; top:15%; left:4.5%; width:24%; }
+    .team-subheading {
+      font-family:'Oswald',sans-serif; color:#d31118; font-size:clamp(0.82rem,1.1vw,1.1rem);
+      font-weight:500; letter-spacing:2px; text-transform:uppercase; margin-bottom:clamp(7px,0.9vw,14px);
+    }
+    .team-main-heading {
+      font-family:'Oswald',sans-serif; font-size:clamp(1.9rem,4.3vw,4.8rem);
+      line-height:1.05; text-transform:uppercase; color:#111;
+    }
+    .trainers-grid {
+      position:absolute; bottom:8%; left:28.5%; width:67%;
+      display:grid; grid-template-columns:repeat(5,1fr); gap:1.5%;
+    }
+    .trainer-info { display:flex; flex-direction:column; padding-right:0.8vw; }
+    .trainer-name {
+      font-family:'Oswald',sans-serif; color:#d31118; font-size:clamp(0.95rem,1.55vw,1.7rem);
+      font-weight:700; text-transform:uppercase; margin-bottom:0.35vw; letter-spacing:.4px;
+    }
+    .trainer-role {
+      font-family:'Oswald',sans-serif; color:#111; font-size:clamp(0.62rem,0.92vw,0.95rem);
+      font-weight:600; text-transform:uppercase; line-height:1.3; margin-bottom:0.55vw; letter-spacing:.4px;
+    }
+    .trainer-desc { font-family:'Poppins',sans-serif; font-size:clamp(0.58rem,0.8vw,0.86rem); color:#222; line-height:1.5; }
+
+    /* ── SECTION 5: BANNER ── */
+    .banner-section { position:relative; background:#000; }
+    .banner-bg { display:block; width:100%; height:auto; }
+    .banner-content-wrap { position:absolute; inset:0; }
+    .banner-headline {
+      position:absolute; top:24.5%; left:9.5%;
+      font-family:'Oswald',sans-serif; font-size:3.8vw;
+      line-height:1.05; color:#fff; text-transform:uppercase; letter-spacing:.5px;
+    }
+    .banner-subtext {
+      position:absolute; top:26.5%; left:42.5%;
+      font-family:'Poppins',sans-serif; font-size:1.35vw; line-height:1.45; color:#fff; font-weight:300;
+    }
+    .banner-btn-text {
+      position:absolute; top:31%; left:77.8%;
+      font-family:'Oswald',sans-serif; font-size:2.2vw;
+      color:#000; text-transform:uppercase; font-weight:600; letter-spacing:1px; cursor:pointer;
+    }
+    .banner-logo-text { position:absolute; top:55%; left:11%; line-height:1.1; }
+    .banner-logo-main { font-family:'Oswald',sans-serif; font-size:2.6vw; color:#fff; font-weight:700; letter-spacing:1px; }
+    .banner-logo-sub  { font-family:'Poppins',sans-serif; font-size:.8vw; color:#d31118; font-weight:600; letter-spacing:1.5px; }
+    .banner-contact-text { position:absolute; font-family:'Poppins',sans-serif; font-size:1.1vw; color:#fff; font-weight:400; }
+    .banner-location { top:54.5%; left:38%; line-height:1.5; }
+    .banner-phone    { top:57.5%; left:60%; }
+    .banner-insta    { top:57.5%; left:78%; }
+    .banner-tagline {
+      position:absolute; top:73%; left:50%; transform:translateX(-50%);
+      font-family:'Poppins',sans-serif; font-size:1vw; font-weight:400;
+      letter-spacing:.8vw; white-space:nowrap;
+    }
+    .tag-red { color:#d31118; }
+    .tag-white { color:#fff; }
+
+    /* ──────────────────────────────────────────
+       MOBILE (≤ 900px)
+       Switch ALL sections from absolute-overlay
+       to stacked image + content below
+       ────────────────────────────────────────── */
+    @media (max-width:900px) {
+      /* Header */
+      .navbar, .header-action { display:none; }
+      .hamburger { display:flex; }
+      .main-header { padding:14px 5%; background:rgba(0,0,0,.85); }
+
+      /* ── HERO mobile ── */
+      .hero-content-wrap {
+        position:relative; inset:auto;
+        padding:24px 5% 36px;
+        background:#000;
+      }
+      /* Darken the image a bit so it looks intentional */
+      .hero-bg { filter:brightness(.85); }
+
+      /* ── STORY mobile ── */
+      .story-content-wrap {
+        position:relative; inset:auto;
+        padding:32px 5% 36px;
+        background:rgba(255,255,255,.92);
+      }
+      .story-inner { max-width:100%; }
+
+      /* ── MISSION mobile ── */
+      .mission-content-wrap {
+        position:relative; inset:auto;
+        padding:32px 5% 36px;
+        background:rgba(10,0,0,.82);
+        justify-content:flex-start;
+      }
+      .mission-container { max-width:100%; }
+
+      /* ── TEAM mobile ── */
+      .team-bg { display:none; } /* image unusable at mobile */
+      .team-content-wrap {
+        position:relative; inset:auto;
+        background:#111; padding:44px 5% 44px;
+      }
+      .team-header-content {
+        position:static; width:100%; margin-bottom:30px;
+      }
+      .team-main-heading { color:#fff; font-size:clamp(1.9rem,7vw,3rem); }
+      .trainers-grid {
+        position:static; width:100%; left:auto; bottom:auto;
+        grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+        gap:22px;
+      }
+      .trainer-name  { font-size:clamp(1rem,3.5vw,1.3rem); margin-bottom:6px; }
+      .trainer-role  { font-size:clamp(0.65rem,2.2vw,0.82rem); color:#bbb; margin-bottom:7px; }
+      .trainer-desc  { font-size:clamp(0.7rem,2.2vw,0.82rem); color:#888; }
+
+      /* ── BANNER mobile ── */
+      .banner-bg { display:none; }
+      .banner-content-wrap {
+        position:relative; inset:auto;
+        background:#0a0a0a; padding:44px 5%;
+        display:flex; flex-direction:column; gap:28px;
+      }
+      /* hide all absolute-positioned desktop banner elements */
+      .banner-headline,.banner-subtext,.banner-btn-text,
+      .banner-logo-text,.banner-contact-text,.banner-tagline { display:none; }
+      /* show mobile-only banner blocks */
+      .bm-cta,.bm-contact,.bm-footer { display:flex !important; }
+    }
+
+    /* ── MOBILE PORTRAIT fine-tune (≤480px) ── */
+    @media (max-width:480px) {
+      .hero-content-wrap { padding:20px 5% 30px; }
+      .stats-container { gap:4px; }
+      .stat-box p { letter-spacing:.4px; }
+      .trainers-grid { grid-template-columns:1fr 1fr; }
+    }
+
+    /* ── LANDSCAPE SHORT SCREENS ── */
+    @media (max-width:900px) and (orientation:landscape) {
+      .hero-content-wrap, .story-content-wrap,
+      .mission-content-wrap, .team-content-wrap,
+      .banner-content-wrap { padding-top:20px; padding-bottom:20px; }
+    }
+
+    /* ── MOBILE BANNER BLOCKS (hidden on desktop) ── */
+    .bm-cta, .bm-contact, .bm-footer { display:none; flex-direction:column; }
+
+    .bm-cta h2 {
+      font-family:'Oswald',sans-serif; color:#fff; font-size:clamp(1.7rem,6vw,2.8rem);
+      line-height:1.05; text-transform:uppercase; margin-bottom:12px;
+    }
+    .bm-cta p {
+      font-family:'Poppins',sans-serif; color:#bbb; font-size:clamp(0.83rem,2.5vw,0.98rem);
+      font-weight:300; line-height:1.5; margin-bottom:18px;
+    }
+    .bm-cta button {
+      align-self:flex-start; background:#d31118; color:#fff; border:none;
+      padding:11px 26px; font-family:'Oswald',sans-serif;
+      font-size:1.05rem; letter-spacing:1px; cursor:pointer; text-transform:uppercase;
+    }
+    .bm-contact { gap:13px; border-top:1px solid rgba(255,255,255,.1); padding-top:24px; }
+    .bm-contact-item { display:flex; flex-direction:column; gap:3px; }
+    .bm-contact-item .lbl { color:#d31118; font-family:'Oswald',sans-serif; font-size:.7rem; letter-spacing:2px; text-transform:uppercase; }
+    .bm-contact-item .val { color:#fff; font-size:clamp(0.83rem,2.5vw,0.96rem); }
+    .bm-footer { border-top:1px solid rgba(255,255,255,.1); padding-top:22px; gap:6px; }
+    .bm-footer .logo-title  { font-family:'Oswald',sans-serif; font-size:clamp(1.15rem,4vw,1.55rem); color:#fff; font-weight:700; letter-spacing:1px; }
+    .bm-footer .logo-sub    { color:#d31118; font-size:.62rem; font-weight:600; letter-spacing:1.4px; display:block; margin-top:3px; }
+    .bm-tagline { font-family:'Poppins',sans-serif; font-size:clamp(.6rem,1.8vw,.76rem); letter-spacing:clamp(2px,2vw,5px); color:#555; margin-top:8px; }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="main-header" id="home">
+  <div class="logo">
+    <span class="logo-title">LAXMAN'S</span>
+    <span class="logo-subtitle">GYM &amp; FITNESS STUDIO</span>
+  </div>
+  <nav class="navbar">
+    <a href="#home" class="active">HOME</a>
+    <a href="#story">PROGRAMS</a>
+    <a href="#team">TRANSFORMATIONS</a>
+    <a href="#story">ABOUT US</a>
+    <a href="#team">GALLERY</a>
+    <a href="#contact">CONTACT</a>
+  </nav>
+  <div class="header-action">
+    <button class="btn-join" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">JOIN NOW &rarr;</button>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#home"    onclick="closeNav()">HOME</a>
+  <a href="#story"   onclick="closeNav()">PROGRAMS</a>
+  <a href="#team"    onclick="closeNav()">TRANSFORMATIONS</a>
+  <a href="#story"   onclick="closeNav()">ABOUT US</a>
+  <a href="#team"    onclick="closeNav()">GALLERY</a>
+  <a href="#contact" onclick="closeNav()">CONTACT</a>
+  <button class="btn-join" onclick="closeNav();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">JOIN NOW &rarr;</button>
+</nav>
+
+<!-- ── SECTION 1: HERO ── -->
+<section class="hero-section">
+  <img class="hero-bg" src="hero.png" alt="Laxman's Gym hero">
+  <div class="hero-content-wrap">
+    <div class="hero-content">
+      <div class="subheading">
+        <span class="red-text-small">ABOUT US</span>
+        <div class="red-line"></div>
+      </div>
+      <h1 class="main-title">
+        <span class="white-text">MORE THAN A GYM.</span><br>
+        <span class="red-text-large">WE ARE A MOVEMENT.</span>
+      </h1>
+      <p class="description">At Laxman's Gym &amp; Fitness Studio, we don't just train bodies — we build stronger lives. Built on passion. Driven by purpose. Committed to your transformation.</p>
+      <div class="action-buttons">
+        <button class="btn-outline" onclick="document.getElementById('story').scrollIntoView({behavior:'smooth'})">OUR STORY &rarr;</button>
+        <button class="btn-play" id="videoBtn"><span class="play-icon">&#9658;</span> WATCH OUR STORY</button>
+      </div>
+      <div class="stats-container">
+        <div class="stat-box"><div class="icon">☆</div><h2>4.8</h2><p>RATING<br>(326+ REVIEWS)</p></div>
+        <div class="stat-box"><div class="icon">👥</div><h2>1500+</h2><p>HAPPY<br>MEMBERS</p></div>
+        <div class="stat-box"><div class="icon">🏋️</div><h2>10+</h2><p>YEARS OF<br>EXCELLENCE</p></div>
+        <div class="stat-box"><div class="icon">🏆</div><h2>8+</h2><p>CERTIFIED<br>TRAINERS</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 2: STORY ── -->
+<section class="story-section" id="story">
+  <img class="story-bg" src="2.png" alt="Our story background">
+  <div class="story-content-wrap">
+    <div class="story-inner">
+      <div class="story-subheading-wrapper">
+        <span class="story-subheading">OUR STORY</span>
+        <div class="line-thin"></div>
+      </div>
+      <h2 class="story-main-heading">A JOURNEY THAT<br>INSPIRES <span style="color:#d31118">CHANGE.</span></h2>
+      <div class="line-thick"></div>
+      <p class="story-description">What started as a small dream has grown into a hub for transformation. At Laxman's, we believe fitness is beyond reps — it's about becoming the strongest version of yourself inside out.</p>
+      <p class="story-description">From beginners taking their first step to athletes breaking their limits, we have been part of thousands of transformations and we're just getting started.</p>
+      <div class="founder-info">
+        <div class="signature-wrapper">
+          <div class="signature">Laxman</div>
+          <div class="signature-line"></div>
+        </div>
+        <div class="role">FOUNDER &amp; HEAD COACH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 3: MISSION ── -->
+<section class="mission-section" id="mission">
+  <img class="mission-bg" src="3.png" alt="Mission background">
+  <div class="mission-content-wrap">
+    <div class="mission-container">
+      <div class="mission-subheading">OUR MISSION</div>
+      <h2 class="mission-main-heading">TO EMPOWER EVERY INDIVIDUAL TO LIVE A STRONGER, HEALTHIER, HAPPIER LIFE.</h2>
+      <hr class="divider-line">
+      <ul class="mission-list">
+        <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#d31118" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>Expert coaching and personalized training</li>
+        <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#d31118" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>Premium equipment and world-class facilities</li>
+        <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#d31118" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>Scientific training methods for real results</li>
+        <li><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="#d31118" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>Programs for all fitness levels and goals</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4: TEAM ── -->
+<section class="team-section" id="team">
+  <img class="team-bg" src="4.png" alt="Our team" loading="lazy">
+  <div class="team-content-wrap">
+    <div class="team-header-content">
+      <div class="team-subheading">OUR TEAM</div>
+      <h2 class="team-main-heading">EXPERTS WHO<br>BELIEVE IN <span style="color:#d31118">YOU.</span></h2>
+    </div>
+    <div class="trainers-grid">
+      <div class="trainer-info"><h3 class="trainer-name">LAXMAN</h3><p class="trainer-role">FOUNDER &amp; HEAD COACH</p><p class="trainer-desc">10+ years of experience in strength training and transformations.</p></div>
+      <div class="trainer-info"><h3 class="trainer-name">ARJUN</h3><p class="trainer-role">STRENGTH &amp;<br>CONDITIONING COACH</p><p class="trainer-desc">Specialist in muscle building, strength &amp; performance.</p></div>
+      <div class="trainer-info"><h3 class="trainer-name">POOJA</h3><p class="trainer-role">FITNESS &amp;<br>NUTRITION COACH</p><p class="trainer-desc">Expert in weight loss, nutrition guidance &amp; women's fitness.</p></div>
+      <div class="trainer-info"><h3 class="trainer-name">RAHUL</h3><p class="trainer-role">CROSSFIT &amp;<br>FUNCTIONAL COACH</p><p class="trainer-desc">Expert in functional training, mobility &amp; endurance.</p></div>
+      <div class="trainer-info"><h3 class="trainer-name">KARAN</h3><p class="trainer-role">PHYSIQUE &amp;<br>TRANSFORMATION COACH</p><p class="trainer-desc">Helping members achieve their dream physique.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 5: BANNER / CONTACT ── -->
+<section class="banner-section" id="contact">
+  <img class="banner-bg" src="5.png" alt="Join Laxman's" loading="lazy">
+  <div class="banner-content-wrap">
+    <!-- Desktop absolute elements -->
+    <div class="banner-headline">READY TO START YOUR<br>TRANSFORMATION?</div>
+    <div class="banner-subtext">Join Laxman's Gym &amp; Fitness Studio<br>today and become part of a family<br>that believes in you.</div>
+    <div class="banner-btn-text" onclick="alert('Navigating to join form!')">JOIN NOW &rarr;</div>
+    <div class="banner-logo-text">
+      <div class="banner-logo-main">LAXMAN'S</div>
+      <div class="banner-logo-sub">GYM &amp; FITNESS STUDIO</div>
+    </div>
+    <div class="banner-contact-text banner-location">Lalitha Bagh,<br>Mangalore - 575003</div>
+    <div class="banner-contact-text banner-phone">09000584838</div>
+    <div class="banner-contact-text banner-insta">laxmans_gym_fitness_studio</div>
+    <div class="banner-tagline"><span class="tag-red">DISCIPLINE TODAY.</span>&nbsp;<span class="tag-white">STRENGTH TOMORROW.</span></div>
+
+    <!-- Mobile flow elements -->
+    <div class="bm-cta">
+      <h2>READY TO START YOUR TRANSFORMATION?</h2>
+      <p>Join Laxman's Gym &amp; Fitness Studio today and become part of a family that believes in you.</p>
+      <button onclick="alert('Navigating to join form!')">JOIN NOW &rarr;</button>
+    </div>
+    <div class="bm-contact">
+      <div class="bm-contact-item"><span class="lbl">Location</span><span class="val">Lalitha Bagh, Mangalore - 575003</span></div>
+      <div class="bm-contact-item"><span class="lbl">Phone</span><span class="val"><a href="tel:09000584838" style="color:#fff;text-decoration:none">09000584838</a></span></div>
+      <div class="bm-contact-item"><span class="lbl">Instagram</span><span class="val">@laxmans_gym_fitness_studio</span></div>
+    </div>
+    <div class="bm-footer">
+      <span class="logo-title">LAXMAN'S</span>
+      <span class="logo-sub">GYM &amp; FITNESS STUDIO</span>
+      <p class="bm-tagline"><span class="tag-red">DISCIPLINE TODAY.</span> <span style="color:#555">STRENGTH TOMORROW.</span></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+    document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeNav() {
+    hamburger.classList.remove('open');
+    mobileNav.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('videoBtn').addEventListener('click', () => {
+    alert('This would open a video modal!');
+  });
+</script>
+</body>
+</html>
